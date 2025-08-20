@@ -1,0 +1,49 @@
+# =========================================
+# Node / NestJS
+# =========================================
+node_modules/
+dist/
+build/
+.cache/
+coverage/
+.nyc_output/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Arquivos de ambiente
+.env
+.env.*.local
+*.local
+
+# Logs do sistema
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# =========================================
+# Terraform (pasta iac/)
+# =========================================
+*.tfstate
+*.tfstate.*
+*.terraform.lock.hcl
+.terraform/
+
+# Backups e overrides do Terraform
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# =========================================
+# IDE / Sistema Operacional
+# =========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
