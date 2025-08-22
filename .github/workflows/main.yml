@@ -4,6 +4,14 @@ on:
   push:
     branches: [ master ]
 
+permissions: 
+  id-token: write
+  contents: read
+
+defaults:
+  run:
+    working-directory: nestjs-docker-optimized
+
 jobs:
   build:
     name: Build and test
@@ -29,6 +37,7 @@ jobs:
           # node-version: ${{ matrix.node }}
           node-version: 20
           cache: pnpm
+          cache-dependency-path: nestjs-docker-optimized/pnpm-lock.yaml
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -46,7 +55,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.3.1
         with:
           aws-region: ue-east-2
-          role-to-assume: arn:aws-cn:iam::123456789100:role/my-github-actions-role
+          role-to-assume: arn:aws:iam::292659699009:role/ecr-role
 
       - name: Login to Amazon ECR
         id: login-ecr
