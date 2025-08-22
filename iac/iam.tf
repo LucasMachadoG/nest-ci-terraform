@@ -51,7 +51,22 @@ resource "aws_iam_role_policy" "ecr_app_permissions" {
     Version   = "2012-10-17"
     Statement = [
       {
-        Sid      = "Statement1"
+        Sid      = "Statement1",
+        Action = "apprunner:*",
+        Effect = "Allow",
+        Resource = "*",
+      }, 
+      {
+        Sid      = "Statement2",
+        Action = [
+          "iam:PassRole",
+          "iam:CreateServiceLinkedRole",
+        ],
+        Effect = "Allow",
+        Resource = "*",
+      },
+      {
+        Sid      = "Statement3"
         Effect   = "Allow"
         Action   = [
           "ecr:GetDownloadUrlForLayer",
@@ -67,4 +82,26 @@ resource "aws_iam_role_policy" "ecr_app_permissions" {
       }
     ]
   })
+}
+
+resource "aws_iam_role" "app-runner-role" {
+  name = "app-runner-role-ci"
+
+  assume_role_policy = jsonencode({
+    Version   = "2012-10-17"
+    Statement = [{
+      Effect    = "Allow"
+      Action    = "sts:AssumeRole"
+      Principal = { Service = "build.apprunner.amazonaws.com" }
+    }]
+  })
+
+  tags = {
+    IAC = "true"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "app_runner_ecr_access" {
+  role       = aws_iam_role.app-runner-role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }

@@ -62,10 +62,24 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build docker image
+        id: build-docker-image
         env:
           REGISTRY: ${{steps.login-ecr.outputs.registry}}
           TAG: ${{ steps.generate_tag.outputs.sha }}
         run: |
           docker build -t $REGISTRY/nest-ci:$TAG .
           docker push $REGISTRY/nest-ci:$TAG
+          IMAGE=$(echo $REGISTRY/nest-ci:$TAG)
+          echo "image=$IMAGE" >> $GITHUB_OUTPUT
+
+      - name: Deploy to app runner
+        uses: awslabs/amazon-app-runner-deploy@main
+        with:
+          service: nest-ci-api
+          image: ${{ steps.build-docker-image.outputs.image }}
+          access-role-arn: arn:aws:iam::292659699009:role/app-runner-role-ci
+          region: us-east-2
+          cpu: 1
+          memory: 2
+          port: 3000
 
