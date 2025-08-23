@@ -55,7 +55,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4.3.1
         with:
           aws-region: us-east-2
-          role-to-assume: arn:aws:iam::292659699009:role/ecr-role
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -80,7 +80,7 @@ jobs:
         with:
           service: nest-ci-api
           image: ${{ steps.build-docker-image.outputs.image }}
-          access-role-arn: arn:aws:iam::292659699009:role/app-runner-role-ci
+          access-role-arn: ${{ secrets.APP_RUNNER_ACCESS_ROLE_ARN }}
           region: us-east-2
           cpu: 1
           memory: 2
@@ -89,4 +89,3 @@ jobs:
 
       - name: App Runner check
         run: echo "App Runner running... ${{ steps.deploy-app-runner.outputs.service-url }}"
-
